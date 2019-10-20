@@ -1,6 +1,13 @@
-import { Application as ExpressApp, Router } from 'express';
+import {
+  Application as ExpressApp,
+  Router,
+  Request,
+  Response,
+  NextFunction,
+} from 'express';
 import { flatMap } from 'lodash';
 import AppRoutes from './v1/index';
+import { checkJWT } from '../middleware/checkJWT';
 
 export default class Routes {
   public router: Router = Router();
@@ -13,12 +20,17 @@ export default class Routes {
       const routeData = routeBuilder[1];
 
       return routeData.map(route => ({
-        method: route.method,
+        ...route,
         path: `/${routeBasePath}${route.path}`,
-        action: route.action,
       }));
     }).forEach(route => {
-      this.router[route.method](route.path, route.action);
+      const middlewares = [];
+
+      if (route.requiresAuth) {
+        middlewares.push(checkJWT);
+      }
+
+      this.router[route.method](route.path, middlewares, route.action);
     });
   }
 }

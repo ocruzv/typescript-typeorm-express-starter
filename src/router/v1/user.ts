@@ -1,4 +1,4 @@
-import UserController from '../../controller/user';
+import UserController from '../../controller/UserController';
 
 const userController = new UserController();
 
@@ -7,6 +7,7 @@ const UserRoutes = [
     path: '/',
     method: 'get',
     action: userController.getAll,
+    requiresAuth: true,
   },
   {
     path: '/:id',

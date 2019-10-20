@@ -2,23 +2,30 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
+  Unique,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Length, IsNotEmpty, IsEmail } from 'class-validator';
+import * as bcrypt from 'bcryptjs';
 
 @Entity()
+@Unique(['email'])
 export default class User {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  firstName: string;
+  @IsEmail()
+  email: string;
 
   @Column()
-  lastName: string;
+  @Length(4, 100)
+  password: string;
 
   @Column()
-  age: number;
+  @IsNotEmpty()
+  role: string;
 
   @Column()
   @CreateDateColumn()
@@ -27,4 +34,12 @@ export default class User {
   @Column()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  hashPassword() {
+    this.password = bcrypt.hashSync(this.password, 8);
+  }
+
+  checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
+    return bcrypt.compareSync(unencryptedPassword, this.password);
+  }
 }
