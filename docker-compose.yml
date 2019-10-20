@@ -1,0 +1,11 @@
+version: '2'
+services:
+  db:
+    image: 'postgres:11-alpine'
+    container_name: 'my_postgres'
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+volumes:
+  postgresdata:
