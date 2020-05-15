@@ -1,11 +1,13 @@
 version: '2'
 services:
   db:
-    image: 'postgres:11-alpine'
+    image: 'postgres:12-alpine'
     container_name: 'my_postgres'
     ports:
       - '5432:5432'
     volumes:
       - postgresdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=secret
 volumes:
   postgresdata:
